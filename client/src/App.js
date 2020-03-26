@@ -1,13 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './App.css';
 import Grafica from './components/grafica';
 import Formulario from './components/formulario'; 
 import Tabla from './components/tabla';
 const axios = require('axios');
 const qs = require('querystring')
-class App extends Component {
 
-  lol = () => {
+function App () {
+
+  const [objetoTabla, setObjetoTabla] = React.useState('jj');
+
+  const lol = () => {
     const requestBody = {
       name:'Susana',
       description: 'lool',
@@ -35,26 +38,35 @@ class App extends Component {
     //   console.log(res.data)
     // });
     // Mostrar Lista
+    console.log('entraa')
+    console.log(objetoTabla)
     axios.get('/task')
     .then( (res) =>{
-      console.log(res.data)
+      console.log(res.data.task)
+      setObjetoTabla(res.data.task)
+      console.log(objetoTabla)
     });
   }
-  
-  render(){
     return (
       <div className="App">
         
-        <button onClick={this.lol}>Nuevo</button>
+        <button onClick={lol}>Nuevo</button>
         <Grafica/>
         <Formulario/>
         <Tabla rows = {[{
           nombre: 'Ricardo',
           duracion: '30',
           descripcion: 'React'
-        }]} />
+        },
+        {
+          nombre: 'Sharon',
+          duracion: '24',
+          descripcion: 'leeel'
+        },
+        
+        ]} />
       </div>
     )
   }
-}
+
 export default App;
