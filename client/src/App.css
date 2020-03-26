@@ -1,0 +1,17 @@
+ul > li {
+  list-style: none;
+}
+
+.formulario{
+  width: 400px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.App{
+  width: 100%;
+}
+
+.botonFormulario{
+  margin-left: 80px !important;
+}
