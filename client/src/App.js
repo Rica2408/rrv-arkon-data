@@ -3,7 +3,7 @@ import './App.css';
 import Grafica from './components/grafica';
 import Formulario from './components/formulario'; 
 import Tabla from './components/tabla';
-import { setObjetoTabla } from '../src/action/index';
+import { setObjetoTabla, setDataGraph } from '../src/action/index';
 import { connect } from 'react-redux';
 import Editar from './components/editar';
 
@@ -68,13 +68,15 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = ({objetoTabla, orderBy}) => ({
+const mapStateToProps = ({objetoTabla, orderBy, name}) => ({
   objetoTabla,
   orderBy,
+  name,
 });
 
 const mapDispatchToProps = dispatch => ({
   setObjetoTabla: value => dispatch(setObjetoTabla(value)),
+  setDataGraph: value => dispatch(setDataGraph(value)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

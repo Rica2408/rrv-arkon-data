@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -8,14 +7,9 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
-import { setObjetoTabla, setOrderBy } from '../action/index';
+import { setObjetoTabla, setOrderBy, setName, setDataGraph } from '../action/index';
 import { connect } from 'react-redux';
 
 const axios = require('axios');
@@ -74,13 +68,22 @@ function Tabla(props) {
         alert("borrada correctamente");
 
         axios.get('/task')
-      .then( (res) =>{
-        props.setObjetoTabla({
-          ...res.data.task})
-          console.log("si entro")
+        .then( (res) =>{
+          props.setObjetoTabla({
+            ...res.data.task})
+            console.log("si entro")
+        });
       });
-      });
+  }
 
+
+
+  const nameHistory = name => {
+    props.setName(name); 
+    axios.get(`/task/${name}`)
+      .then( (res) =>{
+        props.setDataGraph({...res.data.task});
+      });
   }
 
   return (
@@ -108,13 +111,14 @@ function Tabla(props) {
             <TableCell>Descripcion</TableCell>
             <TableCell>Fecha Inicio</TableCell>
             <TableCell>Id tarea</TableCell>
+            <TableCell></TableCell>
 
           </TableRow>
         </TableHead>
         <TableBody>
           {props.rows.map(row => (
             <TableRow key={row.id}>
-              <TableCell component="th" scope="row">
+              <TableCell component="th" scope="row" onClick={ () => nameHistory(row.name)}>
                 {row.name}
               </TableCell>
               <TableCell>{row.time}</TableCell>
@@ -142,6 +146,9 @@ const mapStateToProps = ({ orderBy }) => ({
 const mapDispatchToProps = dispatch => ({
   setObjetoTabla: value => dispatch(setObjetoTabla(value)),
   setOrderBy: value => dispatch(setOrderBy(value)),
+  setName: value => dispatch(setName(value)),
+  setDataGraph: value => dispatch(setDataGraph(value)),
+
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tabla);

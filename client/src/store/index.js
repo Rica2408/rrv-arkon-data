@@ -4,6 +4,8 @@ import reducer from './../reducer';
 const initialState = {
     objeto: '',
     orderBy: 'name',
+    name:'',
+    dataGraph: {}
 }
 
 export const store = createStore( reducer,initialState,
