@@ -1,16 +1,20 @@
-import React from 'react';
+import React, { Component } from 'react';
 import './App.css';
 import Grafica from './components/grafica';
 import Formulario from './components/formulario'; 
 import Tabla from './components/tabla';
+import { setObjetoTabla } from '../src/action/index';
+import { connect } from 'react-redux';
+import Editar from './components/editar';
+
 const axios = require('axios');
 const qs = require('querystring')
 
-function App () {
+class App extends Component {
 
-  const [objetoTabla, setObjetoTabla] = React.useState('jj');
+  
 
-  const lol = () => {
+  lol = () => {
     const requestBody = {
       name:'Susana',
       description: 'lool',
@@ -38,35 +42,39 @@ function App () {
     //   console.log(res.data)
     // });
     // Mostrar Lista
-    console.log('entraa')
-    console.log(objetoTabla)
-    axios.get('/task')
+
+    axios.get(`/task?order=${this.props.orderBy}`)
     .then( (res) =>{
-      console.log(res.data.task)
-      setObjetoTabla(res.data.task)
-      console.log(objetoTabla)
+      this.props.setObjetoTabla({
+        ...res.data.task})
     });
   }
+
+  componentDidMount(){
+    {this.lol()}
+  }
+  render(){
     return (
       <div className="App">
-        
-        <button onClick={lol}>Nuevo</button>
+          
+        <div className="formas">
+          <Formulario/>
+          <Editar/>
+        </div>
         <Grafica/>
-        <Formulario/>
-        <Tabla rows = {[{
-          nombre: 'Ricardo',
-          duracion: '30',
-          descripcion: 'React'
-        },
-        {
-          nombre: 'Sharon',
-          duracion: '24',
-          descripcion: 'leeel'
-        },
-        
-        ]} />
+        <Tabla rows = {Object.values(this.props.objetoTabla)} />
       </div>
     )
   }
+}
 
-export default App;
+const mapStateToProps = ({objetoTabla, orderBy}) => ({
+  objetoTabla,
+  orderBy,
+});
+
+const mapDispatchToProps = dispatch => ({
+  setObjetoTabla: value => dispatch(setObjetoTabla(value)),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

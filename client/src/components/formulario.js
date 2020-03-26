@@ -2,13 +2,15 @@ import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
+import { setObjetoTabla } from '../action/index';
+import { connect } from 'react-redux';
 const axios = require('axios');
-const qs = require('querystring')
+const qs = require('querystring');
 
 
-export default function Formulario() {
+function Formulario(props) {
  const [value, setValue] = React.useState('Controlled');
-
+ 
   const handleChange = event => {
     setValue(event.target.value);
   };
@@ -49,11 +51,19 @@ export default function Formulario() {
     // Crear Tarea
     axios.post('/task',qs.stringify(requestBody), config)
       .then( (res) =>{
-        console.log(res.data)
+        console.log(res.data);
+        axios.get(`/task?order=${props.orderBy}`)
+          .then( (res) =>{
+            props.setObjetoTabla({
+              ...res.data.task})
+          });
       });
+
+      
   }
   return (
       <div className="formulario">
+      <h1>Crear tarea</h1>
         <ul>
             <li><TextField
             id="name"
@@ -89,3 +99,14 @@ export default function Formulario() {
       </div>
   );
 }
+
+const mapStateToProps = ({objetoTabla, orderBy}) => ({
+  objetoTabla,
+  orderBy,
+});
+
+const mapDispatchToProps = dispatch => ({
+  setObjetoTabla: value => dispatch(setObjetoTabla(value)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Formulario);

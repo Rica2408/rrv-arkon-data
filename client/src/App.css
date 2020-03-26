@@ -3,7 +3,7 @@ ul > li {
 }
 
 .formulario{
-  width: 400px;
+  width: 300px;
   margin: 0 auto;
   position: relative;
 }
@@ -14,4 +14,8 @@ ul > li {
 
 .botonFormulario{
   margin-left: 80px !important;
+}
+
+.formas{
+  display: flex;
 }

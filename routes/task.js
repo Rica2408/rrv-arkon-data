@@ -71,13 +71,15 @@ router.delete('/task/:id', (req,res) =>{
 router.get('/task' ,(req, res) => {
     
     let desde = req.query.desde || 0;
-    let limite = req.query.limite || 5;
+    let limite = req.query.limite || 10;
+    let order = req.query.order || 'name';
     desde = Number(desde);
     limite = Number(limite);
     //llamar parametros opcionares ?variable=valor
     //req.query.variable
     Task.find({})
         .skip(desde)
+        .sort(order)
         .limit(limite) //limitar datos
         .exec((err, task) =>{
             if(err) {
