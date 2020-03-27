@@ -7,53 +7,36 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
-import MenuItem from '@material-ui/core/MenuItem';
-import TextField from '@material-ui/core/TextField';
-import { setObjetoTabla, setOrderBy, setName, setDataGraph, setDetailTask } from '../action/index';
+import { setObjectTable, setOrderBy, setName, setDataGraph, setDetailTask } from '../action/index';
 import { connect } from 'react-redux';
 
 const axios = require('axios');
 
-function Tabla(props) {
+function TableTask(props) {
 
-  const orderPor = [
-    {
-      value: 'name',
-      label: 'Nombre'
-    },
-    {
-      value: 'date',
-      label: 'Fecha'
-    },
-    {
-      value: 'time',
-      label: 'Tiempo'
-    }
-  ];
-
+  // Eliminacion de una tabla y hacer la actualizacion de la tabla
   const eliminarTarea = id => {
-      axios.delete(`/task/${id}`)
-      .then((res) => {
-        console.log(res.data);
-        alert("borrada correctamente");
-
-        axios.get('/task')
+    axios.delete(`/task/${id}`)
+    .then((res) => {
+      console.log(res.data);
+      alert("borrada correctamente");
+      axios.get('/task')
         .then( (res) =>{
-          props.setObjetoTabla({
+          props.setObjectTable({
             ...res.data.task
           })
-            console.log("si entro")
-        });
       });
+    });
   }
   
 
   const nameHistory = (name, id) => {
+    // pausar el temporizador
     props.funp();
     //actualizar datos
-    props.fun();
+    props.fun();  // Al seleccionar un nombre empieza luego luego el temporizador de la tarea
     props.setName(name); 
-    axios.get(`/task/${name}`)
+    axios.get(`/task/${name}`) // Asignar datos a redux para poder ver detalles e informacion de grafica
       .then( (res) =>{
         props.setDataGraph(res.data.task );
       });
@@ -73,8 +56,6 @@ function Tabla(props) {
   }
 
   return (
-
-
     <TableContainer component={Paper}>
       <Table aria-label="simple table">
         <TableHead>
@@ -85,7 +66,6 @@ function Tabla(props) {
             <TableCell>Descripcion</TableCell>
             <TableCell>Id tarea</TableCell>
             <TableCell></TableCell>
-
           </TableRow>
         </TableHead>
         <TableBody> 
@@ -115,9 +95,8 @@ const mapStateToProps = ({ orderBy }) => ({
   orderBy,
 });
 
-
 const mapDispatchToProps = dispatch => ({
-  setObjetoTabla: value => dispatch(setObjetoTabla(value)),
+  setObjectTable: value => dispatch(setObjectTable(value)),
   setOrderBy: value => dispatch(setOrderBy(value)),
   setName: value => dispatch(setName(value)),
   setDataGraph: value => dispatch(setDataGraph(value)),
@@ -125,4 +104,4 @@ const mapDispatchToProps = dispatch => ({
 
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Tabla);
+export default connect(mapStateToProps, mapDispatchToProps)(TableTask);

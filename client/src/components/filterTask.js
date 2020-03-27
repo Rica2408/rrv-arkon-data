@@ -1,15 +1,17 @@
-import React, { Component } from 'react'
+import React from 'react'
 import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
-import { setObjetoTabla, setDataGraph, setOrderBy} from '../action/index';
+import { setObjectTable, setDataGraph, setOrderBy} from '../action/index';
 
 const axios = require('axios');
-const Filtros = (props) => {  
+
+const FilterTask = (props) => {  
+    // funciones para filtrar la base de datos
     const duracion = () => {
         props.setOrderBy('time');
         axios.get(`/task?order=time`)
         .then( (res) =>{
-            props.setObjetoTabla(
+            props.setObjectTable(
             res.data.task )
         });
       }
@@ -18,7 +20,7 @@ const Filtros = (props) => {
         props.setOrderBy('status');
         axios.get(`/task?order=status`)
         .then( (res) =>{
-            props.setObjetoTabla(
+            props.setObjectTable(
             res.data.task )
         });
       }
@@ -27,7 +29,7 @@ const Filtros = (props) => {
         props.setOrderBy('date');
         axios.get(`/task?order=date`)
         .then( (res) =>{
-            props.setObjetoTabla(
+            props.setObjectTable(
             res.data.task )
         });
       }
@@ -36,7 +38,7 @@ const Filtros = (props) => {
         props.setOrderBy('name');
         axios.get(`/task?order=name`)
         .then( (res) =>{
-            props.setObjetoTabla(
+            props.setObjectTable(
             res.data.task )
         });
       }
@@ -45,7 +47,7 @@ const Filtros = (props) => {
         props.setOrderBy('name');
         axios.get(`/taskCom`)
         .then( (res) =>{
-            props.setObjetoTabla(
+            props.setObjectTable(
             res.data.task )
         });
       }
@@ -71,17 +73,17 @@ const Filtros = (props) => {
     )
 }
 
-const mapStateToProps = ({objetoTabla, orderBy, name, detailTask}) => ({
-    objetoTabla,
+const mapStateToProps = ({objectTable, orderBy, name, detailTask}) => ({
+    objectTable,
     orderBy,
     name,
     detailTask,
   });
   
   const mapDispatchToProps = dispatch => ({
-    setObjetoTabla: value => dispatch(setObjetoTabla(value)),
+    setObjectTable: value => dispatch(setObjectTable(value)),
     setDataGraph: value => dispatch(setDataGraph(value)),
     setOrderBy: value => dispatch(setOrderBy(value)),
   })
   
-  export default connect(mapStateToProps, mapDispatchToProps)(Filtros);
+  export default connect(mapStateToProps, mapDispatchToProps)(FilterTask);

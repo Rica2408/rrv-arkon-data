@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import './App.css';
-import Grafica from './components/grafica';
-import Formulario from './components/formulario'; 
-import Filtros from './components/filtros'; 
-import Tabla from './components/tabla';
-import EstadoTarea from './components/estadoTarea';
-import { setObjetoTabla, setDataGraph, setOrderBy} from '../src/action/index';
+import Grafica from './components/graphTask';
+import Formulario from './components/formTask'; 
+import Filtros from './components/filterTask'; 
+import Tabla from './components/tableTask';
+import StateTask from './components/stateTask';
+import { setObjectTable, setDataGraph, setOrderBy} from '../src/action/index';
 import { connect } from 'react-redux';
-import Editar from './components/editar';
+import Editar from './components/editTask';
 
 const axios = require('axios');
-const qs = require('querystring')
 
 class App extends Component {
   clockRef = null;
@@ -37,13 +36,12 @@ class App extends Component {
   lol = () => {
     axios.get(`/task?order=${this.props.orderBy}`)
     .then( (res) =>{
-      this.props.setObjetoTabla(
+      this.props.setObjectTable(
         res.data.task )
     });
   }
 
   componentDidMount(){
-    console.log("siiiiiiiiiiiiiiiiiiiiiiiiiiiii")
     this.lol()
   }
   render(){
@@ -54,25 +52,25 @@ class App extends Component {
           <Formulario/>
           <Editar/>
           <Grafica />
-          <EstadoTarea refCallback={this.setClockRef} time={this.props.detailTask.timeRemain} startfun ={this.start} stopfun={this.pause} />
+          <StateTask refCallback={this.setClockRef} time={this.props.detailTask.timeRemain} startfun ={this.start} stopfun={this.pause} />
         </div>
           <h1>Filtrar por:</h1>
           <Filtros/>
-        <Tabla fun ={this.start} funp={this.pause} rows = {Object.values(this.props.objetoTabla)} />
+        <Tabla fun ={this.start} funp={this.pause} rows = {Object.values(this.props.objectTable)} />
       </div>
     )
   }
 }
 
-const mapStateToProps = ({objetoTabla, orderBy, name, detailTask}) => ({
-  objetoTabla,
+const mapStateToProps = ({objectTable, orderBy, name, detailTask}) => ({
+  objectTable,
   orderBy,
   name,
   detailTask,
 });
 
 const mapDispatchToProps = dispatch => ({
-  setObjetoTabla: value => dispatch(setObjetoTabla(value)),
+  setObjectTable: value => dispatch(setObjectTable(value)),
   setDataGraph: value => dispatch(setDataGraph(value)),
   setOrderBy: value => dispatch(setOrderBy(value)),
 })
