@@ -20,6 +20,7 @@ router.post('/task', (req, res) => {
         description: body.description,
         time: body.time,
         day: dia(),
+        timeRemain: body.time,
     });
     // Guardar en moongo DB
     task.save((err, taskDB) =>{
@@ -111,6 +112,24 @@ router.get('/taskid/:id' ,(req, res) => {
     let id = req.params.id;
 
     Task.find({"_id":id})
+        .exec((err, task) =>{
+            if(err) {
+                return res.status(400).json({
+                    ok:false,
+                    err
+                })
+            }
+            res.json({
+                ok:true,
+                task
+            })
+        })
+});
+
+router.get('/taskCom' ,(req, res) => {
+    let id = req.params.id;
+
+    Task.find({"status": true})
         .exec((err, task) =>{
             if(err) {
                 return res.status(400).json({

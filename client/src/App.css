@@ -11,7 +11,7 @@ ul > li {
   margin-top: 15px;
 }
 
-.formulario h1 {
+h1 {
   text-align: center;
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 }
@@ -22,6 +22,14 @@ ul > li {
 
 .botonFormulario{
   margin-left: 80px !important;
+}
+
+.botonfiltro{
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
+  width: 100px;
+  margin-left: 80px !important;
+  font-size: 12px !important;
 }
 
 .statusBoton{
@@ -49,4 +57,11 @@ ul > li {
 
 .centrado{
   text-align: center;
+}
+
+.filtros{
+  display: flex;
+  justify-content: space-around;
+  align-content:flex-start;
+  flex-wrap: wrap;
 }

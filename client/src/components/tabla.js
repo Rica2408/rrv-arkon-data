@@ -13,14 +13,6 @@ import { setObjetoTabla, setOrderBy, setName, setDataGraph, setDetailTask } from
 import { connect } from 'react-redux';
 
 const axios = require('axios');
-interface Props {
-  rows: Array<{
-    id: String,
-    nombre: String,
-    duracion: String,
-    descripcion: String
-  }>;
-}
 
 function Tabla(props) {
 
@@ -39,26 +31,6 @@ function Tabla(props) {
     }
   ];
 
-  const [orden, setOrden] = React.useState('name');
-
-  const handleChanges = event => {
-    setOrden(event.target.value);
-
-    if(event.target.value){
-      props.setOrderBy(event.target.value);
-    }
-    else{
-      props.setOrderBy('name');
-    }
-      
-    axios.get(`/task?order=${orden}`)
-          .then( (res) =>{
-            console.log("entra al order")
-            props.setObjetoTabla({
-              ...res.data.task})
-          });
-  }
-
   const eliminarTarea = id => {
       axios.delete(`/task/${id}`)
       .then((res) => {
@@ -68,7 +40,7 @@ function Tabla(props) {
         axios.get('/task')
         .then( (res) =>{
           props.setObjetoTabla({
-            data: res.data.task
+            ...res.data.task
           })
             console.log("si entro")
         });
@@ -83,7 +55,7 @@ function Tabla(props) {
     props.setName(name); 
     axios.get(`/task/${name}`)
       .then( (res) =>{
-        props.setDataGraph({...res.data.task});
+        props.setDataGraph(res.data.task );
       });
     axios.get(`/taskid/${id}`)
     .then( (res) =>{
@@ -104,19 +76,6 @@ function Tabla(props) {
 
 
     <TableContainer component={Paper}>
-      <TextField
-        id="duration"
-        select
-        label="Nombre"
-        onClick={handleChanges}
-        helperText="Ordernar Por"
-      >
-        {orderPor.map(option => (
-          <MenuItem id="menuItem" key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        ))}
-      </TextField>
       <Table aria-label="simple table">
         <TableHead>
           <TableRow>
@@ -129,7 +88,7 @@ function Tabla(props) {
 
           </TableRow>
         </TableHead>
-        <TableBody>
+        <TableBody> 
           {props.rows.map(row => (
             <TableRow key={row.id}>
               <TableCell component="th" scope="row" onClick={ () => nameHistory(row.name,row._id)}>

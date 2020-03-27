@@ -62,7 +62,7 @@ function Formulario(props) {
     axios.post('/task',qs.stringify(requestBody), config)
       .then( (res) =>{
         console.log(res.data);
-        axios.get(`/task?order=${props.orderBy}`)
+        axios.get(`/task?order=name`)
           .then( (res) =>{
             props.setObjetoTabla({
               ...res.data.task})

@@ -124,8 +124,9 @@ class EstadoTarea extends Component {
     }
 }
 
-const mapStateToProps = ({ detailTask }) => ({
-    detailTask
+const mapStateToProps = ({ detailTask, orderBy }) => ({
+    detailTask,
+    orderBy
 });
 
 const mapDispatchToProps = dispatch => ({

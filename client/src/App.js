@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import './App.css';
 import Grafica from './components/grafica';
 import Formulario from './components/formulario'; 
+import Filtros from './components/filtros'; 
 import Tabla from './components/tabla';
 import EstadoTarea from './components/estadoTarea';
-import { setObjetoTabla, setDataGraph } from '../src/action/index';
+import { setObjetoTabla, setDataGraph, setOrderBy} from '../src/action/index';
 import { connect } from 'react-redux';
 import Editar from './components/editar';
 
@@ -36,12 +37,13 @@ class App extends Component {
   lol = () => {
     axios.get(`/task?order=${this.props.orderBy}`)
     .then( (res) =>{
-      this.props.setObjetoTabla({
-        ...res.data.task})
+      this.props.setObjetoTabla(
+        res.data.task )
     });
   }
 
   componentDidMount(){
+    console.log("siiiiiiiiiiiiiiiiiiiiiiiiiiiii")
     this.lol()
   }
   render(){
@@ -54,6 +56,8 @@ class App extends Component {
           <Grafica />
           <EstadoTarea refCallback={this.setClockRef} time={this.props.detailTask.timeRemain} startfun ={this.start} stopfun={this.pause} />
         </div>
+          <h1>Filtrar por:</h1>
+          <Filtros/>
         <Tabla fun ={this.start} funp={this.pause} rows = {Object.values(this.props.objetoTabla)} />
       </div>
     )
@@ -70,6 +74,7 @@ const mapStateToProps = ({objetoTabla, orderBy, name, detailTask}) => ({
 const mapDispatchToProps = dispatch => ({
   setObjetoTabla: value => dispatch(setObjetoTabla(value)),
   setDataGraph: value => dispatch(setDataGraph(value)),
+  setOrderBy: value => dispatch(setOrderBy(value)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
