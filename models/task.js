@@ -24,6 +24,10 @@ const TaskSchema = new mongoose.Schema({
     day: {
         type: String,
         required: false,
+    },
+    timeRemain:{
+        type: String,
+        defaul: "0"
     }
 });
 

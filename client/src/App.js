@@ -12,38 +12,28 @@ const axios = require('axios');
 const qs = require('querystring')
 
 class App extends Component {
+  clockRef = null;
 
-  
+    constructor(props) {
+        super(props);
+        this.setClockRef = this.setClockRef.bind(this);
+        this.start = this.start.bind(this);
+        this.pause = this.pause.bind(this);
+    }
+
+    start() {
+      this.clockRef.start();
+    }
+
+    pause() {
+        this.clockRef.pause();
+    }
+
+    setClockRef(ref) {
+        this.clockRef = ref;
+    }
 
   lol = () => {
-    const requestBody = {
-      name:'Susana',
-      description: 'lool',
-      time: '1hour,'
-    }
-
-    const config = {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    }
-    //Crear Tarea
-    // axios.post('/task',qs.stringify(requestBody), config)
-    //   .then( (res) =>{
-    //     console.log(res.data)
-    //   });
-    // Hacer un update  
-    // axios.put('/task/5e7ba59000e44759223e9e42',qs.stringify(requestBody), config)
-    // .then( (res) =>{
-    //   console.log(res.data)
-    // });
-    // Eliminacion de tarea
-    // axios.delete('/task/5e7ba59000e44759223e9e42')
-    // .then( (res) =>{
-    //   console.log(res.data)
-    // });
-    // Mostrar Lista
-
     axios.get(`/task?order=${this.props.orderBy}`)
     .then( (res) =>{
       this.props.setObjetoTabla({
@@ -52,7 +42,7 @@ class App extends Component {
   }
 
   componentDidMount(){
-    {this.lol()}
+    this.lol()
   }
   render(){
     return (
@@ -61,23 +51,20 @@ class App extends Component {
         <div className="formas">
           <Formulario/>
           <Editar/>
-          <Grafica/>
-          <EstadoTarea/>
+          <Grafica />
+          <EstadoTarea refCallback={this.setClockRef} time={this.props.detailTask.timeRemain} startfun ={this.start} stopfun={this.pause} />
         </div>
-        <div className="formas2">
-          
-          
-        </div>
-        <Tabla rows = {Object.values(this.props.objetoTabla)} />
+        <Tabla fun ={this.start} funp={this.pause} rows = {Object.values(this.props.objetoTabla)} />
       </div>
     )
   }
 }
 
-const mapStateToProps = ({objetoTabla, orderBy, name}) => ({
+const mapStateToProps = ({objetoTabla, orderBy, name, detailTask}) => ({
   objetoTabla,
   orderBy,
   name,
+  detailTask,
 });
 
 const mapDispatchToProps = dispatch => ({

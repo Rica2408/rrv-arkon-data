@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import { setObjetoTabla } from '../action/index';
 import { connect } from 'react-redux';
 const axios = require('axios');
-const qs = require('querystring')
+const qs = require('querystring');
 
 function Editar( props ) {
     const [value, setValue] = React.useState('Controlled');

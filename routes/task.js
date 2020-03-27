@@ -107,10 +107,28 @@ router.get('/task' ,(req, res) => {
         })
 });
 
+router.get('/taskid/:id' ,(req, res) => {
+    let id = req.params.id;
+
+    Task.find({"_id":id})
+        .exec((err, task) =>{
+            if(err) {
+                return res.status(400).json({
+                    ok:false,
+                    err
+                })
+            }
+            res.json({
+                ok:true,
+                task
+            })
+        })
+});
+
 router.get('/task/:name' ,(req, res) => {
     
     let name = req.params.name
-    Task.find({$and:[{"name": name}, {"status": false }]})
+    Task.find({$and:[{"name": name}, {"status": true }]})
         .exec((err, task) =>{
             if(err) {
                 return res.status(400).json({

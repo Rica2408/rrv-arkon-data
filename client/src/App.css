@@ -24,6 +24,10 @@ ul > li {
   margin-left: 80px !important;
 }
 
+.statusBoton{
+  width: 180px;
+}
+
 .formas{
   display: flex;
   justify-content: space-around;
@@ -41,4 +45,8 @@ ul > li {
   text-align: center;
   width: 450px;
   margin-top: 15px;
+}
+
+.centrado{
+  text-align: center;
 }

@@ -5,7 +5,18 @@ const initialState = {
     objeto: '',
     orderBy: 'name',
     name:'',
-    dataGraph: {}
+    dataGraph: {},
+    detailTask: {
+        status:false,
+        _id:'',
+        name:'',
+        description:'',
+        time:'',
+        day:'',
+        date:'',
+        __v:'',
+        timeRemain:'',
+    }
 }
 
 export const store = createStore( reducer,initialState,
