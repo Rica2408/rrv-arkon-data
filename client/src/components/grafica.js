@@ -61,13 +61,13 @@ class Grafica extends Component {
     }
     render() {
         return (
-            <div>
+            <div className="grafica">
                 <h1>{this.props.name}</h1>
                 <VictoryChart style={{ parent: { maxWidth: "450px" } }}
                     domainPadding={20}
                 >
                     <VictoryAxis
-                        label="Horas en la ultima semana"
+                        label="NUmero de tarea en la ultima semana"
                         tickValues={[1, 2, 3, 4, 5]}
                         tickFormat={["Lunes", "Martes", "Miercoles", "Jueves", "Viernes"]}
                     />

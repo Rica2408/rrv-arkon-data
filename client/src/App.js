@@ -3,6 +3,7 @@ import './App.css';
 import Grafica from './components/grafica';
 import Formulario from './components/formulario'; 
 import Tabla from './components/tabla';
+import EstadoTarea from './components/estadoTarea';
 import { setObjetoTabla, setDataGraph } from '../src/action/index';
 import { connect } from 'react-redux';
 import Editar from './components/editar';
@@ -60,8 +61,13 @@ class App extends Component {
         <div className="formas">
           <Formulario/>
           <Editar/>
+          <Grafica/>
+          <EstadoTarea/>
         </div>
-        <Grafica/>
+        <div className="formas2">
+          
+          
+        </div>
         <Tabla rows = {Object.values(this.props.objetoTabla)} />
       </div>
     )
