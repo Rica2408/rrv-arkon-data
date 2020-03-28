@@ -15,7 +15,7 @@ const TaskSchema = new mongoose.Schema({
     },
     status: {
         type: Boolean,
-        default: false
+        required: false
     },
     date: {
         type: Date,
@@ -27,6 +27,10 @@ const TaskSchema = new mongoose.Schema({
     },
     timeRemain:{
         type: String,
+        required: false,
+    },
+    createFunct:{
+        type: Boolean,
         required: false,
     }
 });

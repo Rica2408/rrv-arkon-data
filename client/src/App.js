@@ -8,32 +8,31 @@ import StateTask from './components/stateTask';
 import { setObjectTable, setDataGraph, setOrderBy} from '../src/action/index';
 import { connect } from 'react-redux';
 import Editar from './components/editTask';
+import { createObject } from './functions/createObj';
 
+const qs = require('querystring');
 const axios = require('axios');
 
 class App extends Component {
   clockRef = null;
 
-    constructor(props) {
-        super(props);
-        this.setClockRef = this.setClockRef.bind(this);
-        this.start = this.start.bind(this);
-        this.pause = this.pause.bind(this);
-    }
+  constructor(props) {
+      super(props);
+      this.setClockRef = this.setClockRef.bind(this);
+      this.start = this.start.bind(this);
+      this.pause = this.pause.bind(this);
+  }
+  start() {
+    this.clockRef.start();
+  }
+  pause() {
+      this.clockRef.pause();
+  }
+  setClockRef(ref) {
+      this.clockRef = ref;
+  }
 
-    start() {
-      this.clockRef.start();
-    }
-
-    pause() {
-        this.clockRef.pause();
-    }
-
-    setClockRef(ref) {
-        this.clockRef = ref;
-    }
-
-  lol = () => {
+  viewTable = () => {
     axios.get(`/task?order=${this.props.orderBy}`)
     .then( (res) =>{
       this.props.setObjectTable(
@@ -41,8 +40,64 @@ class App extends Component {
     });
   }
 
+  createFifty = () => {
+    const obj=createObject();
+    let newObj;
+    const config = {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }
+    console.log(obj)
+    for (let i = 0; i < obj.length; i++) {
+      newObj = {
+        description: obj[i].description,
+        status: true,
+        date: "",
+        day: obj[i].day,
+        timeRemain: "0",
+        time: obj[i].time,
+        name: obj[i].name,
+        createFunct: obj[i].createFunct,
+      }
+  
+      axios.post('/task',qs.stringify(newObj), config)
+          .then( (res) =>{
+            console.log(res.data);
+          }); 
+      }
+        axios.get(`/task?order=${this.props.orderBy}`)
+          .then( (res) =>{
+            this.props.setObjectTable({
+              ...res.data.task})
+          });
+        
+      }
+      
+      deleteFifty = () => {
+        
+        axios.get('/taskDelete')
+      .then( (res) => {
+        for (let i = 0; i < res.data.task.length; i++) {
+          axios.delete(`/task/${res.data.task[i]._id}`)
+          .then((res) => {
+            console.log(res.data);
+            
+          });
+        }
+
+        alert("borradas correctamente");
+            axios.get(`/task?order=${this.props.orderBy}`)
+              .then( (res) =>{
+                this.props.setObjectTable({
+                  ...res.data.task
+                })
+            });
+      })         
+    
+  }
   componentDidMount(){
-    this.lol()
+    this.viewTable()
   }
   render(){
     return (
@@ -54,6 +109,8 @@ class App extends Component {
           <Grafica />
           <StateTask refCallback={this.setClockRef} time={this.props.detailTask.timeRemain} startfun ={this.start} stopfun={this.pause} />
         </div>
+          <button onClick={this.createFifty}> Crear 50 datos</button>
+          <button onClick={this.deleteFifty}> Elimnar 50 datos por funcion</button>
           <h1>Filtrar por:</h1>
           <Filtros/>
         <Tabla fun ={this.start} funp={this.pause} rows = {Object.values(this.props.objectTable)} />

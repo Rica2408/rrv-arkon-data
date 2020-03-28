@@ -11,18 +11,18 @@ class StateTask extends Component {
     
     
     render() {
-        const { refCallback, time } = this.props;
+        const { refCallback, time, detailTask, orderBy } = this.props;
         // Componente cuando finaliza la tarea, cuando llega a '0'
         const Completionist = () => <div>
-                <p>Nombre: {this.props.detailTask.name}</p>
-                <p>Id Tarea: {this.props.detailTask._id}</p>
-                <p>Descripcion: {this.props.detailTask.description}</p>
-                <p>Fecha Inicio: {this.props.detailTask.date}</p>
-                <p>Estimacion Tolal: {this.props.detailTask.time}</p>
+                <p>Nombre: {detailTask.name}</p>
+                <p>Id Tarea: {detailTask._id}</p>
+                <p>Descripcion: {detailTask.description}</p>
+                <p>Fecha Inicio: {detailTask.date}</p>
+                <p>Estimacion Tolal: {detailTask.time}</p>
             </div>;
 
         var tiempoRes;       // Guardar el tiempo restante
-        var status = this.props.detailTask.status;  //si ya se realizo o no
+        var status = detailTask.status;  //si ya se realizo o no
         let requestBody;
 
         const actualizar = (id,resultado) => {
@@ -47,7 +47,7 @@ class StateTask extends Component {
             axios.put(`/task/${id}`,qs.stringify(requestBody), config)
                 .then( (res) =>{
                     console.log(res.data);
-                    axios.get(`/task?order=${this.props.orderBy}`)
+                    axios.get(`/task?order=${orderBy}`)
                         .then( (res) =>{
                             this.props.setObjectTable({
                                 ...res.data.task})
@@ -74,11 +74,11 @@ class StateTask extends Component {
                 tiempoRes=minutes;
                 return (
                     <div>
-                        <p>Nombre: {this.props.detailTask.name}</p>
-                        <p>Id Tarea: {this.props.detailTask._id}</p>
-                        <p>Descripcion: {this.props.detailTask.description}</p>
-                        <p>Fecha Inicio: {this.props.detailTask.date}</p>
-                        <p>Estimacion Tolal: {this.props.detailTask.time}</p>
+                        <p>Nombre: {detailTask.name}</p>
+                        <p>Id Tarea: {detailTask._id}</p>
+                        <p>Descripcion: {detailTask.description}</p>
+                        <p>Fecha Inicio: {detailTask.date}</p>
+                        <p>Estimacion Tolal: {detailTask.time}</p>
                         <br/>
                         <p>Tiempo faltante: {hours}:{minutes}:{seconds}</p>
                         <br/>
@@ -103,7 +103,7 @@ class StateTask extends Component {
 
         const pausar = () =>{
             // Se manda a llamar la funcion start para pausar
-            actualizar(this.props.detailTask._id,tiempoRes)
+            actualizar(detailTask._id,tiempoRes)
             this.props.stopfun();
         }
 
@@ -114,17 +114,17 @@ class StateTask extends Component {
 
         return (
             <div className="formulario centrado">
-                <h3>Nombre:{this.props.detailTask.name}</h3>
-                
-            <Countdown
-                ref={refCallback} 
-                date={Date.now() + (time * 1000 * 60)}  // la variable time se toma de redux con respecto al valor de la duracion de la tarea
-                intervalDelay={3}
-                zeroPadTime={2}
-                autoStart={false}
-                renderer={renderer}
-                daysInHours
-            /> 
+            
+                <Countdown
+                    ref={refCallback} 
+                    date={Date.now() + (time * 1000 * 60)}  // la variable time se toma de redux con respecto al valor de la duracion de la tarea
+                    intervalDelay={3}
+                    zeroPadTime={2}
+                    autoStart={false}
+                    renderer={renderer}
+                    daysInHours
+                />
+
             </div>
         );
     }

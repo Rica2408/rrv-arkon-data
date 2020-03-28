@@ -36,47 +36,39 @@ function EditTask( props ) {
     const handleChanges = event => {
         setTiempoTareaD(event.target.value);
     }
-    // verificar que no esten campos vacios
-    const validations = () =>{
-        if(document.getElementById("idUpdate").value === "" ||
-        document.getElementById("durations").value === "" ||
-        document.getElementById("descriptionUpdate").value === ""){
-          return false;
-        }
-        return true;
-      }
 
     const editTask = () =>{
-        if ( validations === true ){
-            //tomar valores del formulario para hacer peticiones a la API
-            let id = document.getElementById('idUpdate').value;
        
-            const requestBody = {
-                time: tiempoTareaD,
-                description: document.getElementById('descriptionUpdate').value,
-            }
-      
-            console.log(requestBody);
-            const config = {
-                headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            }
+        //tomar valores del formulario para hacer peticiones a la API
+        let id = document.getElementById('idUpdate').value;
     
-            // Hacer un el cambio y  update de la tabla 
-            axios.put(`/task/${id}`,qs.stringify(requestBody), config)
-            .then( (res) =>{
-                console.log(res.data);
-                axios.get(`/task?order=${props.orderBy}`)
-                .then( (res) =>{
-                    props.setObjectTable({
-                    ...res.data.task})
-                }); 
-            });
-
-        } else {
-            alert("datos no completados")
+        const requestBody = {
+            time: tiempoTareaD,
+            description: document.getElementById('descriptionUpdate').value,
         }
+    
+        console.log(requestBody);
+        const config = {
+            headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        }
+
+        // Hacer un el cambio y  update de la tabla 
+        axios.put(`/task/${id}`,qs.stringify(requestBody), config)
+        .then( (res) =>{
+            console.log(res.data);
+            axios.get(`/task?order=${props.orderBy}`)
+            .then( (res) =>{
+                props.setObjectTable({
+                ...res.data.task})
+            }); 
+        })
+        .catch((err) =>{
+            alert("Complete el ID de la tarea o el ID no existe")
+        });
+
+
     }
 
     return (

@@ -2,16 +2,6 @@ const express = require('express');
 const router = express.Router();
 const  Task = require('../models/task');
 
-
-const dia = () => {
-    var now = new Date();
-    var start = new Date(now.getFullYear(), 0, 0);
-    var diff = (now - start) + ((start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000);
-    var oneDay = 1000 * 60 * 60 * 24;
-    var day = Math.floor(diff / oneDay);
-    return day;
-}
-
 //Crear nueva tarea
 router.post('/task', (req, res) => {
     let body = req.body;
@@ -19,8 +9,10 @@ router.post('/task', (req, res) => {
         name: body.name,
         description: body.description,
         time: body.time,
-        day: dia(),
+        day: body.day,
         timeRemain: body.time,
+        createFunct: body.createFunct,
+        status: body.status,
     });
     // Guardar en moongo DB
     task.save((err, taskDB) =>{
@@ -50,7 +42,14 @@ router.put('/task/:id', (req,res) =>{
                 err
             })
         }
-
+        if(!taskDB){
+            res.status(400).json({
+                ok:false,
+                err: {
+                    message: "No se encuentra ese id"
+                }
+            });    
+        }
         res.json({
             ok:true,
             task: taskDB,
@@ -93,6 +92,28 @@ router.get('/task' ,(req, res) => {
         .skip(desde)
         .sort(order)
         .limit(limite) //limitar datos
+        .exec((err, task) =>{
+            if(err) {
+                return res.status(400).json({
+                    ok:false,
+                    err
+                })
+            }
+
+            res.json({
+                ok:true,
+                task
+            })
+        })
+});
+
+// Mostrar traba de usuarios
+
+router.get('/taskDelete' ,(req, res) => {
+    
+    //llamar parametros opcionares ?variable=valor
+    //req.query.variable
+    Task.find({"createFunct": true})
         .exec((err, task) =>{
             if(err) {
                 return res.status(400).json({

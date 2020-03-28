@@ -20,7 +20,7 @@ function TableTask(props) {
     .then((res) => {
       console.log(res.data);
       alert("borrada correctamente");
-      axios.get('/task')
+      axios.get(`/task?order=${props.orderBy}`)
         .then( (res) =>{
           props.setObjectTable({
             ...res.data.task

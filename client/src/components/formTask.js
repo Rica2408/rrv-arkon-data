@@ -48,9 +48,9 @@ function FormTask(props) {
 
   const validations = () =>{
 
-    if(document.getElementById("name").value === "" ||
-    document.getElementById("duration").value === "" ||
-    document.getElementById("description").value === ""){
+    if(document.getElementById("nameform").value === "" ||
+    document.getElementById("durationForm").value === "" ||
+    document.getElementById("desForm").value === ""){
       return false;
     }
     return true;
@@ -58,15 +58,14 @@ function FormTask(props) {
 
   // Funcion para craear una nueva tarea
   const createTask = () =>{
-    if( validations === true ){
-      document.getElementById("name").value = "";
-      document.getElementById("duration").value = "";
-      document.getElementById("nadescriptionme").value = ""; 
+
+    
       const requestBody = {
-          name: document.getElementById('name').value,
+          name: document.getElementById('nameform').value,
           time: tiempoTareaD,
-          description: document.getElementById('description').value,
+          description: document.getElementById('desForm').value,
           day: dia(),
+          status: false,
         }
     
         console.log(requestBody);
@@ -86,10 +85,14 @@ function FormTask(props) {
               props.setObjectTable({
                 ...res.data.task})
             });
-        });
-    } else{
-      alert("hay campos vacios")
-    }
+        })
+        .catch( (err) =>{
+          alert("Faltan datos por ingresar")
+        })
+
+      document.getElementById("nameform").value = "";
+      document.getElementById("durationForm").value = "";
+      document.getElementById("desForm").value = ""; 
   }
 
   return (
@@ -97,14 +100,14 @@ function FormTask(props) {
       <h1>Crear tarea</h1>
         <ul>
             <li><TextField
-              id="name"
+              id="nameform"
               label="Nombre"
               multiline
               rowsMax="4"
               onChange={handleChange}
             /></li>
             <li><TextField
-              id="duration"
+              id="durationForm"
               select
               label="Tiempo"
               onChange={handleChanges}
@@ -117,7 +120,7 @@ function FormTask(props) {
               ))}
             </TextField></li>
             <li><TextField
-                id="description"
+                id="desForm"
                 label="Descripcion Tarea"
                 multiline
                 rows="4"
