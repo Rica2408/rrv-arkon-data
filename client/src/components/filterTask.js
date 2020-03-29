@@ -7,14 +7,7 @@ const axios = require('axios');
 
 const FilterTask = (props) => {  
     // funciones para filtrar la base de datos
-    const duracion = () => {
-        props.setOrderBy('time');
-        axios.get(`/task?order=time`)
-        .then( (res) =>{
-            props.setObjectTable(
-            res.data.task )
-        });
-      }
+   
     
     const estado = () => {
         props.setOrderBy('status');
@@ -54,9 +47,7 @@ const FilterTask = (props) => {
     return (
         <div className="filtros">
             
-            <Button className="botonfiltro" onClick={duracion} variant="contained" color="primary">
-                Duracion
-            </Button>
+            
             <Button className="botonfiltro" onClick={fecha} variant="contained" color="primary">
                 Fecha
             </Button>

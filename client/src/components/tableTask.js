@@ -11,6 +11,8 @@ import { setObjectTable, setOrderBy, setName, setDataGraph, setDetailTask } from
 import { connect } from 'react-redux';
 
 const axios = require('axios');
+const qs = require('querystring');
+
 
 function TableTask(props) {
 
@@ -28,13 +30,54 @@ function TableTask(props) {
       });
     });
   }
+
+  var requestBody;
+    const actualizar = (id,resultado) => {
+            console.log(id)
+            console.log(resultado)
+            if(resultado == "0"){
+                requestBody = {
+                    status:true,
+                    timeRemain: resultado,
+                }
+            } else {
+                requestBody = {
+                    status: false,
+                    timeRemain: resultado,
+                }
+            }
+    
+            const config = {
+                headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }
+
+            axios.put(`/task/${id}`,qs.stringify(requestBody), config)
+                .then( (res) =>{
+                    console.log(res.data);
+                    axios.get(`/task?order=${props.orderBy}`)
+                        .then( (res) =>{
+                            props.setObjectTable({
+                                ...res.data.task})
+                    }); 
+           });
+        }
   
 
   const nameHistory = (name, id) => {
+    var tiempoRes = document.getElementById("minutos").innerHTML;
+    if(props.detailTask.status === false){
+      actualizar(props.detailTask._id,tiempoRes);
+      console.log(tiempoRes)
+    }
+      for (var i = 1; i < 99999; i++)
+          window.clearInterval(i);
+  
     // pausar el temporizador
-    props.funp();
+    
     //actualizar datos
-    props.fun();  // Al seleccionar un nombre empieza luego luego el temporizador de la tarea
+    // Al seleccionar un nombre empieza luego luego el temporizador de la tarea
     props.setName(name); 
     axios.get(`/task/${name}`) // Asignar datos a redux para poder ver detalles e informacion de grafica
       .then( (res) =>{
@@ -91,8 +134,9 @@ function TableTask(props) {
   );
 }
 
-const mapStateToProps = ({ orderBy }) => ({
+const mapStateToProps = ({ orderBy, detailTask }) => ({
   orderBy,
+  detailTask
 });
 
 const mapDispatchToProps = dispatch => ({

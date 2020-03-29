@@ -1,36 +1,20 @@
 import React, { Component } from 'react';
 import './App.css';
-import Grafica from './components/graphTask';
-import Formulario from './components/formTask'; 
-import Filtros from './components/filterTask'; 
-import Tabla from './components/tableTask';
+import GraphTask from './components/graphTask';
+import FormTask from './components/formTask'; 
+import FilterTask from './components/filterTask'; 
+import TableTask from './components/tableTask';
 import StateTask from './components/stateTask';
 import { setObjectTable, setDataGraph, setOrderBy} from '../src/action/index';
 import { connect } from 'react-redux';
 import Editar from './components/editTask';
 import { createObject } from './functions/createObj';
+import Button from '@material-ui/core/Button';
 
 const qs = require('querystring');
 const axios = require('axios');
 
 class App extends Component {
-  clockRef = null;
-
-  constructor(props) {
-      super(props);
-      this.setClockRef = this.setClockRef.bind(this);
-      this.start = this.start.bind(this);
-      this.pause = this.pause.bind(this);
-  }
-  start() {
-    this.clockRef.start();
-  }
-  pause() {
-      this.clockRef.pause();
-  }
-  setClockRef(ref) {
-      this.clockRef = ref;
-  }
 
   viewTable = () => {
     axios.get(`/task?order=${this.props.orderBy}`)
@@ -60,60 +44,84 @@ class App extends Component {
         name: obj[i].name,
         createFunct: obj[i].createFunct,
       }
-  
-      axios.post('/task',qs.stringify(newObj), config)
-          .then( (res) =>{
-            console.log(res.data);
-          }); 
+      if(i === obj.length-1){
+        axios.post('/task',qs.stringify(newObj), config)
+            .then( (res) =>{
+              this.props.setObjectTable({
+                ...res.data.task})
+                axios.get(`/task?order=${this.props.orderBy}`)
+                  .then( (res) =>{
+                    this.props.setObjectTable({
+                      ...res.data.task})
+                  });
+            }); 
       }
-        axios.get(`/task?order=${this.props.orderBy}`)
-          .then( (res) =>{
-            this.props.setObjectTable({
-              ...res.data.task})
-          });
-        
+      else{
+        axios.post('/task',qs.stringify(newObj), config)
+            .then( (res) =>{
+              this.props.setObjectTable({
+                ...res.data.task})
+            }); 
       }
+    }
+  }
       
-      deleteFifty = () => {
+  deleteFifty = () => {
         
-        axios.get('/taskDelete')
+    axios.get('/taskDelete')
       .then( (res) => {
         for (let i = 0; i < res.data.task.length; i++) {
-          axios.delete(`/task/${res.data.task[i]._id}`)
-          .then((res) => {
-            console.log(res.data);
-            
-          });
-        }
 
-        alert("borradas correctamente");
-            axios.get(`/task?order=${this.props.orderBy}`)
-              .then( (res) =>{
-                this.props.setObjectTable({
-                  ...res.data.task
-                })
+          if(i === res.data.task.length-1){
+            axios.delete(`/task/${res.data.task[i]._id}`)
+              .then((res) => {
+                console.log(res.data);
+                alert("borradas correctamente");
+                    axios.get(`/task?order=${this.props.orderBy}`)
+                      .then( (res) =>{
+                        this.props.setObjectTable({
+                          ...res.data.task
+                        })
+                    });
             });
+
+          } else {
+            axios.delete(`/task/${res.data.task[i]._id}`)
+                  .then((res) => {
+                    console.log(res.data);
+                });
+          }
+        }
       })         
     
   }
-  componentDidMount(){
-    this.viewTable()
-  }
-  render(){
-    return (
+
+  
+    componentDidMount(){
+      this.viewTable();
+      
+    }
+    render(){
+      return (
+      
       <div className="App">
           
         <div className="formas">
-          <Formulario/>
+          <FormTask/>
           <Editar/>
-          <Grafica />
-          <StateTask refCallback={this.setClockRef} time={this.props.detailTask.timeRemain} startfun ={this.start} stopfun={this.pause} />
+          <GraphTask />
+          <StateTask/>
         </div>
-          <button onClick={this.createFifty}> Crear 50 datos</button>
-          <button onClick={this.deleteFifty}> Elimnar 50 datos por funcion</button>
+          <Button className="botonfiltro" variant="outlined" color="primary" onClick={this.createFifty}>
+            Crear 50 tarea
+          </Button>
+          <Button className="botonfiltro" variant="outlined" color="primary" onClick={this.deleteFifty}>
+            Eliminar tareas por funcion
+          </Button>
+          
           <h1>Filtrar por:</h1>
-          <Filtros/>
-        <Tabla fun ={this.start} funp={this.pause} rows = {Object.values(this.props.objectTable)} />
+          <FilterTask/>
+        <TableTask rows = {Object.values(this.props.objectTable)} />
       </div>
     )
   }

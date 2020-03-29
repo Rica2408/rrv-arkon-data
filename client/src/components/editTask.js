@@ -4,6 +4,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import { setObjectTable } from '../action/index';
 import { connect } from 'react-redux';
+import { inputData } from './../functions/datosInput';
 
 const axios = require('axios');
 const qs = require('querystring');
@@ -15,20 +16,7 @@ function EditTask( props ) {
         setValue(event.target.value);
     };
     // valores del selector para elegir el tiempo de la tarea
-    const timeTask = [
-        {
-            value: '30',
-            label: 'Corta'
-        },
-        {
-            value: '45',
-            label: 'Mediana'
-        },
-        {
-            value: '60',
-            label: 'Larga'
-        }
-    ];
+    const timeTask = inputData();
 
     // asignacion del valor predeterminado
     const [tiempoTareaD, setTiempoTareaD] = React.useState('30');
@@ -68,6 +56,9 @@ function EditTask( props ) {
             alert("Complete el ID de la tarea o el ID no existe")
         });
 
+        document.getElementById("idUpdate").value = "";
+        document.getElementById("durations").value = "";
+        document.getElementById("descriptionUpdate").value = ""; 
 
     }
 

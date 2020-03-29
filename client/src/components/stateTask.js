@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import Countdown from 'react-countdown';
+import React from 'react';
 import { connect } from 'react-redux';
 import { setObjectTable } from '../action/index';
 import Button from '@material-ui/core/Button';
@@ -7,26 +6,68 @@ import Button from '@material-ui/core/Button';
 const qs = require('querystring');
 const axios = require('axios');
 
-class StateTask extends Component {
-    
-    
-    render() {
-        const { refCallback, time, detailTask, orderBy } = this.props;
-        // Componente cuando finaliza la tarea, cuando llega a '0'
-        const Completionist = () => <div>
-                <p>Nombre: {detailTask.name}</p>
-                <p>Id Tarea: {detailTask._id}</p>
-                <p>Descripcion: {detailTask.description}</p>
-                <p>Fecha Inicio: {detailTask.date}</p>
-                <p>Estimacion Tolal: {detailTask.time}</p>
-            </div>;
+function StateTask (props) {
 
-        var tiempoRes;       // Guardar el tiempo restante
-        var status = detailTask.status;  //si ya se realizo o no
-        let requestBody;
+    var time_in_minutes = props.detailTask.timeRemain;    
+    var current_time = Date.parse(new Date());
+    var status = props.detailTask.status;
+    var deadline = new Date(current_time + time_in_minutes*60*1000);
+    var timeinterval;
+    var paused = false; // is the clock paused?
+    var time_left; // time left on the clock when paused
 
-        const actualizar = (id,resultado) => {
-            if(resultado === "0"){
+    function time_remaining(endtime){
+        
+        var t = Date.parse(endtime) - Date.parse(new Date());
+        var seconds = Math.floor( (t/1000) % 60 );
+        var minutes = Math.floor( (t/1000/60) % 60 );
+        var hours = Math.floor( (t/(1000*60*60)) % 24 );
+        var days = Math.floor( t/(1000*60*60*24) );
+        return {'total':t, 'days':days, 'hours':hours, 'minutes':minutes, 'seconds':seconds};
+    }
+    
+    function run_clock(id,endtime){
+        if(status === false){
+
+            var clock = document.getElementById(id);
+            function update_clock(){
+                var t = time_remaining(endtime);
+                if(clock){
+                    clock.innerHTML = t.minutes;
+                    document.getElementById("pmin").innerHTML = 'minutos';
+                    document.getElementById("segundos").innerHTML = '<br>seconds: '+t.seconds;
+                    if(t.total<=0){
+                         clearInterval(timeinterval); 
+                         actualizar(props.detailTask._id,"0");
+                    }
+                }
+            }
+            update_clock(); // run function once at first to avoid delay
+            timeinterval = setInterval(update_clock,1000);
+        } else{
+            clock = document.getElementById(id);
+            if(clock){
+
+                clock.innerHTML = "Tarea terminada";
+            }
+        }
+    }
+
+    function pause_clock(){
+        if(!paused){
+            paused = true;
+            clearInterval(timeinterval); // stop the clock
+            time_left = time_remaining(deadline).total; // preserve remaining time
+            actualizar(props.detailTask._id,time_remaining(deadline).minutes);
+            console.log()
+        }
+    }
+    run_clock('minutos',deadline);
+
+
+    var requestBody;
+    const actualizar = (id,resultado) => {
+            if(resultado == "0"){
                 requestBody = {
                     status:true,
                     timeRemain: resultado,
@@ -47,88 +88,86 @@ class StateTask extends Component {
             axios.put(`/task/${id}`,qs.stringify(requestBody), config)
                 .then( (res) =>{
                     console.log(res.data);
-                    axios.get(`/task?order=${orderBy}`)
+                    axios.get(`/task?order=${props.orderBy}`)
                         .then( (res) =>{
-                            this.props.setObjectTable({
+                            props.setObjectTable({
                                 ...res.data.task})
                     }); 
            });
         }
 
-        const renderer = ({ hours, minutes, seconds, completed }) => {
-            
-            if (completed && status === false) {
-                //cuando termina el contador y el status es false
-                let id = this.props.detailTask._id;
-                actualizar(id,"0");
-              
-              return <Completionist />;
-            } 
-            
-            if(status){
-                return <Completionist />;
-            }
-            else {
-                // Muestra los siguientes datos cuando no se ha terminado el contador y empieza a decrementar el tiempo
+    function resume_clock(){
+        if(paused){
+            paused = false;
+    
+            // update the deadline to preserve the amount of time remaining
+            deadline = new Date(Date.parse(new Date()) + time_left);
+    
+            // start the clock
+            run_clock('minutos',deadline);
+        }
+    }
+    
+    // handle pause and resume button clicks
+    var lql =document.getElementById('pause');
+    if(lql){
 
-                tiempoRes=minutes;
-                return (
+        document.getElementById('pause').onclick = pause_clock;
+        document.getElementById('resume').onclick = resume_clock;
+    }
+
+    const restablecer = () =>{
+        pause_clock();
+        actualizar(props.detailTask._id,props.detailTask.time)
+    }
+
+    const terminar = () =>{
+        pause_clock();
+        document.getElementById("minutos").innerHTML = '0';
+        actualizar(props.detailTask._id,"0")
+
+    }
+
+
+    return (
+        <div className="formulario centrado" >
+            <h3 id="minutos"></h3>
+            <h3 id="pmin"></h3>
+            <p id="segundos"></p>
+            <p>Nombre: {props.detailTask.name}</p>
+            <p>Id Tarea: {props.detailTask._id}</p>
+            <p>Descripcion: {props.detailTask.description}</p>
+            <p>Fecha Inicio: {props.detailTask.date}</p>
+            <p>Estimacion Tolal: {props.detailTask.time}</p>
+            <br />
+            <span id="timer"></span>
+            <br />
+            {props.detailTask.status === true ? '' :
+                (
                     <div>
-                        <p>Nombre: {detailTask.name}</p>
-                        <p>Id Tarea: {detailTask._id}</p>
-                        <p>Descripcion: {detailTask.description}</p>
-                        <p>Fecha Inicio: {detailTask.date}</p>
-                        <p>Estimacion Tolal: {detailTask.time}</p>
-                        <br/>
-                        <p>Tiempo faltante: {hours}:{minutes}:{seconds}</p>
-                        <br/>
-                        <Button className="statusBoton" onClick={empezar} variant="contained" color="primary">
+                        <Button className="statusBoton" id="resume" variant="contained" color="primary">
                             Empezar
                         </Button>
-                        <Button className="statusBoton" onClick={pausar} variant="contained" color="primary">
+                        <Button className="statusBoton" id="pause" variant="contained" color="primary">
                             Parar
-                        </Button> 
-                        {/* <Button className="statusBoton" onClick={completed = true} variant="contained" color="primary">
+                        </Button>
+                        <Button className="statusBoton" onClick={terminar} variant="contained" color="primary">
+                            Terminar tarea
+                        </Button>
+                        <Button className="statusBoton" onClick={restablecer} variant="contained" color="primary">
                             Restablecer
-                        </Button> */}
-                    </div>
-              );
+                        </Button>
+                    </div>    
+                        
+                )
+
+                    
             }
-        };
-
-        const empezar = () =>{
-            // Se manda a llamar la funcion start para decrementar
-            this.props.startfun();
-        }
-
-        const pausar = () =>{
-            // Se manda a llamar la funcion start para pausar
-            actualizar(detailTask._id,tiempoRes)
-            this.props.stopfun();
-        }
-
-        // const lal = () =>{
-        //     console.log("hace algo")
-        //     actualizar(this.props.detailTask._id,this.props.detailTask.time)
-        // }
-
-        return (
-            <div className="formulario centrado">
-            
-                <Countdown
-                    ref={refCallback} 
-                    date={Date.now() + (time * 1000 * 60)}  // la variable time se toma de redux con respecto al valor de la duracion de la tarea
-                    intervalDelay={3}
-                    zeroPadTime={2}
-                    autoStart={false}
-                    renderer={renderer}
-                    daysInHours
-                />
-
-            </div>
-        );
-    }
+        </div>
+    );
+    
 }
+
 
 const mapStateToProps = ({ detailTask, orderBy }) => ({
     detailTask,
@@ -136,7 +175,7 @@ const mapStateToProps = ({ detailTask, orderBy }) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    setObjectTable: value => dispatch(setObjectTable(value)),  
+    setObjectTable: value => dispatch(setObjectTable(value)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(StateTask);

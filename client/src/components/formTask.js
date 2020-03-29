@@ -4,30 +4,20 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import { setObjectTable } from '../action/index';
 import { connect } from 'react-redux';
+import { inputData } from './../functions/datosInput';
 const axios = require('axios');
 const qs = require('querystring');
 
 function FormTask(props) {
+
+
  const [value, setValue] = React.useState('Controlled');
  
   const handleChange = event => {
     setValue(event.target.value);
   };
   // Campos posible
-  const tiempoTarea = [
-    {
-        value: '30',
-        label: 'Corta'
-    },
-    {
-        value: '45',
-        label: 'Mediana'
-    },
-    {
-        value: '60',
-        label: 'Larga'
-    }
-  ];
+  const tiempoTarea = inputData();
 
   const [tiempoTareaD, setTiempoTareaD] = React.useState('30');
   const handleChanges = event => {
@@ -42,18 +32,6 @@ function FormTask(props) {
     var oneDay = 1000 * 60 * 60 * 24;
     var day = Math.floor(diff / oneDay);
     return day;
-  }
-
-  //validaciones para crear una tarea
-
-  const validations = () =>{
-
-    if(document.getElementById("nameform").value === "" ||
-    document.getElementById("durationForm").value === "" ||
-    document.getElementById("desForm").value === ""){
-      return false;
-    }
-    return true;
   }
 
   // Funcion para craear una nueva tarea
