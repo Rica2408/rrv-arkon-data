@@ -59,9 +59,10 @@ class GraphTask extends Component {
         }
     }
     render() {
+        const { name } = this.props;
         return (
             <div className="grafica">
-                <h1>{this.props.name}</h1>
+                <h1>{name}</h1>
                 <VictoryChart style={{ parent: { maxWidth: "450px" } }}             // Se especifican las dimensiones
                     domainPadding={20}                                                  
                 >

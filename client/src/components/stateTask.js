@@ -33,12 +33,15 @@ function StateTask (props) {
             function update_clock(){
                 var t = time_remaining(endtime);
                 if(clock){
+                    document.getElementById("phrs").innerHTML = 'Horas: ';
+                    document.getElementById("horas").innerHTML = t.hours;
                     clock.innerHTML = t.minutes;
-                    document.getElementById("pmin").innerHTML = 'minutos';
-                    document.getElementById("segundos").innerHTML = '<br>seconds: '+t.seconds;
+                    document.getElementById("pmin").innerHTML = ' minutos: ';
+                    document.getElementById("segundos").innerHTML = ' segundos: '+t.seconds;
                     if(t.total<=0){
                          clearInterval(timeinterval); 
                          actualizar(props.detailTask._id,"0");
+                         
                     }
                 }
             }
@@ -47,8 +50,12 @@ function StateTask (props) {
         } else{
             clock = document.getElementById(id);
             if(clock){
-
-                clock.innerHTML = "Tarea terminada";
+                document.getElementById("phrs").innerHTML = ' Tarea terminada ';
+                document.getElementById("horas").innerHTML = '';
+                document.getElementById("pmin").innerHTML = '';
+                document.getElementById("segundos").innerHTML = '';
+                document.getElementById("minutos").innerHTML = '';
+          
             }
         }
     }
@@ -58,7 +65,10 @@ function StateTask (props) {
             paused = true;
             clearInterval(timeinterval); // stop the clock
             time_left = time_remaining(deadline).total; // preserve remaining time
-            actualizar(props.detailTask._id,time_remaining(deadline).minutes);
+            let tiempo = time_remaining(deadline).hours * 60 + time_remaining(deadline).minutes;
+            console.log("puesa");
+            console.log(tiempo);
+            actualizar(props.detailTask._id, tiempo);
             console.log()
         }
     }
@@ -67,6 +77,7 @@ function StateTask (props) {
 
     var requestBody;
     const actualizar = (id,resultado) => {
+
             if(resultado == "0"){
                 requestBody = {
                     status:true,
@@ -131,9 +142,13 @@ function StateTask (props) {
 
     return (
         <div className="formulario centrado" >
-            <h3 id="minutos"></h3>
-            <h3 id="pmin"></h3>
-            <p id="segundos"></p>
+            <div id="count">
+                <a id="phrs"></a>
+                <a id="horas"></a>
+                <a id="pmin"></a>
+                <a id="minutos"></a>
+                <a id="segundos"></a>
+            </div>    
             <p>Nombre: {props.detailTask.name}</p>
             <p>Id Tarea: {props.detailTask._id}</p>
             <p>Descripcion: {props.detailTask.description}</p>
@@ -142,7 +157,7 @@ function StateTask (props) {
             <br />
             <span id="timer"></span>
             <br />
-            {props.detailTask.status === true ? '' :
+            {props.detailTask.status === true ? <h3>Tarea Finalizada</h3> :
                 (
                     <div>
                         <Button className="statusBoton" id="resume" variant="contained" color="primary">

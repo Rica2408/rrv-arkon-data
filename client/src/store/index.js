@@ -4,7 +4,7 @@ import reducer from './../reducer';
 const initialState = {
     objeto: '',
     orderBy: 'name',
-    name:'',
+    name:'Tabla',
     dataGraph: {},
     detailTask: {
         status:false,

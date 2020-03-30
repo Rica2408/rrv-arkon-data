@@ -66,12 +66,15 @@ function TableTask(props) {
   
 
   const nameHistory = (name, id) => {
-    var tiempoRes = document.getElementById("minutos").innerHTML;
+    console.log(document.getElementById("horas").innerHTML)
+    var tiempoRes = parseInt(document.getElementById("minutos").innerHTML) + 60 * parseInt (document.getElementById("horas").innerHTML);
+    console.log("Nombre")
+    console.log(tiempoRes)
     if(props.detailTask.status === false){
       actualizar(props.detailTask._id,tiempoRes);
       console.log(tiempoRes)
     }
-      for (var i = 1; i < 99999; i++)
+      for (var i = 1; i < 999; i++)
           window.clearInterval(i);
   
     // pausar el temporizador

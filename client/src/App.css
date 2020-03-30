@@ -9,6 +9,7 @@ ul > li {
   border-radius: 10px;
   padding-bottom: 25px;
   margin-top: 15px;
+  margin-right: 8px;
 }
 
 h1 {
@@ -32,6 +33,12 @@ h1 {
   font-size: 12px !important;
 }
 
+.btnfunc{
+  margin: 10px 10px 20px 20px !important;
+  width: 120px;
+  font-size: 12px !important;
+}
+
 .statusBoton{
   width: 180px;
   margin-bottom: 10px !important;
@@ -42,6 +49,11 @@ h1 {
   justify-content: space-around;
   align-content:flex-start;
   flex-wrap: wrap;
+}
+
+.btncenter{
+  display: flex;
+  justify-content:flex-start;
 }
 
 .formas2{

@@ -112,12 +112,15 @@ class App extends Component {
           <GraphTask />
           <StateTask/>
         </div>
-          <Button className="botonfiltro" variant="outlined" color="primary" onClick={this.createFifty}>
+        <div className="btncenter">
+          <Button className="btnfunc" variant="outlined" color="primary" onClick={this.createFifty}>
             Crear 50 tarea
           </Button>
-          <Button className="botonfiltro" variant="outlined" color="primary" onClick={this.deleteFifty}>
+          <Button className="btnfunc" variant="outlined" color="primary" onClick={this.deleteFifty}>
             Eliminar tareas por funcion
           </Button>
+
+        </div>
           
           <h1>Filtrar por:</h1>
           <FilterTask/>
