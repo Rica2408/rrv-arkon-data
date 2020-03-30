@@ -32,7 +32,7 @@ class App extends Component {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     }
-    console.log(obj)
+    
     for (let i = 0; i < obj.length; i++) {
       newObj = {
         description: obj[i].description,
@@ -75,7 +75,6 @@ class App extends Component {
           if(i === res.data.task.length-1){
             axios.delete(`/task/${res.data.task[i]._id}`)
               .then((res) => {
-                console.log(res.data);
                 alert("borradas correctamente");
                     axios.get(`/task?order=${this.props.orderBy}`)
                       .then( (res) =>{
@@ -88,7 +87,7 @@ class App extends Component {
           } else {
             axios.delete(`/task/${res.data.task[i]._id}`)
                   .then((res) => {
-                    console.log(res.data);
+                  
                 });
           }
         }

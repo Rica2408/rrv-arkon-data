@@ -39,9 +39,14 @@ function StateTask (props) {
                     document.getElementById("pmin").innerHTML = ' minutos: ';
                     document.getElementById("segundos").innerHTML = ' segundos: '+t.seconds;
                     if(t.total<=0){
-                         clearInterval(timeinterval); 
-                         actualizar(props.detailTask._id,"0");
-                         
+                        document.getElementById("phrs").innerHTML = 'Tarea terminada';
+                        document.getElementById("horas").innerHTML = " ";
+                        clock.innerHTML = " ";
+                        document.getElementById("pmin").innerHTML = ' ';
+                        document.getElementById("segundos").innerHTML = ' ';
+                        actualizar(props.detailTask._id,"0");
+                        clearInterval(timeinterval); 
+
                     }
                 }
             }
@@ -66,10 +71,7 @@ function StateTask (props) {
             clearInterval(timeinterval); // stop the clock
             time_left = time_remaining(deadline).total; // preserve remaining time
             let tiempo = time_remaining(deadline).hours * 60 + time_remaining(deadline).minutes;
-            console.log("puesa");
-            console.log(tiempo);
             actualizar(props.detailTask._id, tiempo);
-            console.log()
         }
     }
     run_clock('minutos',deadline);
@@ -98,7 +100,6 @@ function StateTask (props) {
 
             axios.put(`/task/${id}`,qs.stringify(requestBody), config)
                 .then( (res) =>{
-                    console.log(res.data);
                     axios.get(`/task?order=${props.orderBy}`)
                         .then( (res) =>{
                             props.setObjectTable({

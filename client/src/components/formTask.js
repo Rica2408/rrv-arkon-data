@@ -46,7 +46,6 @@ function FormTask(props) {
           status: false,
         }
     
-        console.log(requestBody);
         const config = {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -57,12 +56,13 @@ function FormTask(props) {
       // segun la variable en redux orderBy
       axios.post('/task',qs.stringify(requestBody), config)
         .then( (res) =>{
-          console.log(res.data);
+          
           axios.get(`/task?order=${props.orderBy}`)
             .then( (res) =>{
               props.setObjectTable({
                 ...res.data.task})
             });
+          alert("Tarea subida correctamente");
         })
         .catch( (err) =>{
           alert("Faltan datos por ingresar")

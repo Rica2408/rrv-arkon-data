@@ -35,7 +35,6 @@ function EditTask( props ) {
             description: document.getElementById('descriptionUpdate').value,
         }
     
-        console.log(requestBody);
         const config = {
             headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -45,7 +44,6 @@ function EditTask( props ) {
         // Hacer un el cambio y  update de la tabla 
         axios.put(`/task/${id}`,qs.stringify(requestBody), config)
         .then( (res) =>{
-            console.log(res.data);
             axios.get(`/task?order=${props.orderBy}`)
             .then( (res) =>{
                 props.setObjectTable({

@@ -20,7 +20,6 @@ function TableTask(props) {
   const eliminarTarea = id => {
     axios.delete(`/task/${id}`)
     .then((res) => {
-      console.log(res.data);
       alert("borrada correctamente");
       axios.get(`/task?order=${props.orderBy}`)
         .then( (res) =>{
@@ -33,8 +32,6 @@ function TableTask(props) {
 
   var requestBody;
     const actualizar = (id,resultado) => {
-            console.log(id)
-            console.log(resultado)
             if(resultado == "0"){
                 requestBody = {
                     status:true,
@@ -55,7 +52,6 @@ function TableTask(props) {
 
             axios.put(`/task/${id}`,qs.stringify(requestBody), config)
                 .then( (res) =>{
-                    console.log(res.data);
                     axios.get(`/task?order=${props.orderBy}`)
                         .then( (res) =>{
                             props.setObjectTable({
@@ -66,13 +62,9 @@ function TableTask(props) {
   
 
   const nameHistory = (name, id) => {
-    console.log(document.getElementById("horas").innerHTML)
     var tiempoRes = parseInt(document.getElementById("minutos").innerHTML) + 60 * parseInt (document.getElementById("horas").innerHTML);
-    console.log("Nombre")
-    console.log(tiempoRes)
     if(props.detailTask.status === false){
       actualizar(props.detailTask._id,tiempoRes);
-      console.log(tiempoRes)
     }
       for (var i = 1; i < 999; i++)
           window.clearInterval(i);

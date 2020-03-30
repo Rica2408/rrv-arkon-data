@@ -29,7 +29,7 @@ class GraphTask extends Component {
         let viernes = 0;                // no se tuvo en consideracion los dias Sabados ni Domingos
         let objeto = Object.values(this.props.dataGraph);   // conversion de objeto
         if (objeto == '') {
-            console.log("es indefinido")
+            console.log("")
         }
         else {
             for (let i = 0; i < objeto.length; i++) {           // Se usa este FOR para tomar el conteo de tareas en un mismo dia
